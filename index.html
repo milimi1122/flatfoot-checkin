@@ -205,7 +205,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
         <div class="pct" id="progressPct">0%</div>
       </div>
       <div class="progress-info">
-        <b id="doneCount">0</b> / 17 项完成<br>
+        <b id="doneCount">0</b> / 16 项完成<br>
         <span id="streakInfo">连续打卡 0 天</span>
       </div>
     </div>
@@ -214,7 +214,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
   <!-- Morning -->
   <div class="sec-title">
     <div class="icon morning">☀️</div>
-    <span>晨间 12min</span>
+    <span>晨间 10-11min</span>
     <span class="count"><b id="mCount">0</b>/8</span>
   </div>
   <div id="morningList"></div>
@@ -222,8 +222,8 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
   <!-- Evening -->
   <div class="sec-title">
     <div class="icon evening">🌙</div>
-    <span>傍晚 16min</span>
-    <span class="count"><b id="eCount">0</b>/9</span>
+    <span>傍晚 12-13min</span>
+    <span class="count"><b id="eCount">0</b>/8</span>
   </div>
   <div id="eveningList"></div>
 
@@ -330,6 +330,12 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
   <div class="sec-title"><div class="icon evening">🌙</div><span>傍晚 16min</span></div>
   <div id="guideEvening"></div>
 
+  <div class="sec-title"><div class="icon sport">⚽</div><span>运动游戏 15-20min</span></div>
+  <div id="guideSport"></div>
+
+  <div class="sec-title"><div class="icon" style="background:#EF4444">⚠️</div><span>执行风险提醒</span></div>
+  <div id="guideRisk"></div>
+
   <div style="background:#fff;border-radius:var(--radius);padding:10px 12px;border:1px solid var(--border);margin:10px 0">
     <div style="font-size:13px;font-weight:600;color:#EF4444;margin-bottom:4px">⚠️ 扁平足禁忌动作</div>
     <div style="font-size:12px;color:var(--t3);line-height:1.6">高抬腿 · 开合跳 · 连续蛙跳 · W坐姿 · 长期穿软底鞋 · 长时间静蹲</div>
@@ -375,27 +381,41 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 <script>
 // ═══ DATA MODEL ═══
 const MORNING = [
+  {n:'足弓夹球',d:'2组 × 6次/脚',dim:'foot',star:true,key:'大脚趾球部下压，足弓上提夹球3秒',avoid:'脚趾抓球代偿；脚跟离地'},
+  {n:'拇趾外展',d:'2组 × 6次/脚',dim:'foot',star:false,key:'只动大脚趾外展，保持3秒',avoid:'所有脚趾一起动'},
+  {n:'弹珠拾取',d:'1组 × 6颗/脚',dim:'foot',star:true,key:'脚跟固定，脚趾夹弹珠',avoid:'整脚扫球；抬脚跟'},
   {n:'脚跟走',d:'来回5m × 2',dim:'foot',star:false,key:'脚尖翘起，脚跟着地',avoid:'脚尖落地'},
-  {n:'弹珠拾取',d:'1组 × 10颗/脚',dim:'foot',star:true,key:'脚跟固定，脚趾夹球',avoid:'整脚扫球'},
-  {n:'拇趾外展',d:'2组 × 8次/脚',dim:'foot',star:false,key:'只动大脚趾外展',avoid:'所有脚趾一起动'},
-  {n:'足弓夹球',d:'2组 × 8次/脚',dim:'foot',star:false,key:'缩足弓夹球3秒',avoid:'脚趾抓球代偿'},
-  {n:'缩足弓站立',d:'2组 × 20秒/脚',dim:'foot',star:false,key:'大脚趾下压，足弓上提',avoid:'脚趾抓地代偿'},
-  {n:'臀桥',d:'3组 × 10次',dim:'leg',star:false,key:'顶端夹臀2秒',avoid:'腰部代偿'},
-  {n:'侧桥',d:'2组 × 10秒/侧',dim:'leg',star:false,key:'身体一条直线',avoid:'髋部下沉'},
+  {n:'缩足弓站立',d:'2组 × 15秒/脚',dim:'foot',star:false,key:'大脚趾下压，足弓上提；扶墙→单手→无辅助进阶',avoid:'脚趾抓地代偿；膝盖内扣'},
+  {n:'臀桥',d:'3组 × 8次',dim:'leg',star:false,key:'顶端夹臀2秒，膝-髋-肩一线',avoid:'腰部代偿'},
+  {n:'侧桥',d:'2组 × 10秒/侧',dim:'leg',star:false,key:'身体一条直线，髋部不下沉',avoid:'髋部下沉'},
   {n:'髂腰肌拉伸',d:'1组 × 30秒/侧',dim:'posture',star:false,key:'弓步跪姿，骨盆后倾',avoid:'身体前倾'}
 ];
 const EVENING = [
-  {n:'猫牛式',d:'8次',dim:'posture',star:false,key:'脊柱交替弓塌',avoid:'速度太快'},
-  {n:'弹力带脚内翻',d:'2组 × 10次/脚',dim:'foot',star:true,key:'脚向内翻对抗阻力',avoid:'整条腿动'},
-  {n:'提踵(足弓版)',d:'2组 × 12次',dim:'foot',star:false,key:'顶端足弓上提夹紧',avoid:'脚踝外翻'},
-  {n:'弹力带下拉',d:'2组 × 12次',dim:'back',star:true,key:'肩胛骨下沉下拉',avoid:'耸肩下拉'},
-  {n:'弹力带划船',d:'2组 × 12次',dim:'back',star:true,key:'末端肩胛骨夹紧',avoid:'手肘外展'},
-  {n:'吊单杠',d:'3组 × 15秒',dim:'back',star:true,key:'正握悬垂，肩放松下沉',avoid:'耸肩/蹬腿摆荡'},
-  {n:'胸肌拉伸',d:'1组 × 30秒/侧',dim:'posture',star:false,key:'身体前倾+旋转',avoid:'手臂过高'},
-  {n:'单脚站(睁/闭眼)',d:'2组 × 20秒/脚',dim:'foot',star:false,key:'骨盆水平，足弓不塌',avoid:'膝盖内扣'},
-  {n:'小腿拉伸+滚球',d:'30s/侧+1min/脚',dim:'',star:false,key:'后腿脚跟着地/痛点停留',avoid:'脚跟离地/滚太快'}
+  {n:'猫牛式',d:'6次',dim:'posture',star:false,key:'脊柱交替弓塌，激活核心',avoid:'速度太快'},
+  {n:'弹力带脚内翻',d:'2组 × 10次/脚',dim:'foot',star:true,key:'脚向内翻对抗阻力；10磅以内轻阻力',avoid:'整条腿动；膝盖内扣；小腿晃动'},
+  {n:'提踵(足弓版)',d:'2组 × 12次',dim:'foot',star:false,key:'三点均匀踩地→抬升；顶端足弓上提夹紧',avoid:'重心偏足内侧；脚踝外翻'},
+  {n:'弹力带下拉',d:'2组 × 8-10次',dim:'back',star:true,key:'肩胛骨下沉下拉，拉到胸口停1秒',avoid:'耸肩下拉；身体后仰'},
+  {n:'弹力带划船',d:'2组 × 8-10次',dim:'back',star:true,key:'末端肩胛骨夹紧，手肘贴身',avoid:'手肘外展'},
+  {n:'胸肌拉伸',d:'1组 × 30秒/侧',dim:'posture',star:false,key:'仅前倾，不旋转；前臂贴门框',avoid:'手臂过高；旋转身体'},
+  {n:'单脚站(睁眼)',d:'2组 × 15秒/脚',dim:'foot',star:false,key:'骨盆水平，足弓不塌；可扶墙进阶',avoid:'膝盖内扣；脚趾抓地'},
+  {n:'小腿拉伸+滚球',d:'30s/侧 + 1min/脚',dim:'',star:false,key:'后腿脚跟着地/痛点停留',avoid:'脚跟离地/滚太快'}
 ];
-const SPORTS = ['跳绳','户外跑','跳远','球类','综合','自由','休息'];
+const SPORTS = ['无绳跳','户外跑','摸高','球类','综合','自由','休息'];
+const SPORT_GUIDE = [
+  {icon:'🤸',n:'无绳跳绳（替代正式跳绳）',d:'体态矫正期专用',key:'先无绳原地轻跳→足弓适应后过渡单跳→最终上绳；前2周单次≤30个；前脚掌着地，膝盖微屈缓冲',avoid:'体态未矫正前直接上绳跳；全脚掌着地；跳太高；一次超50个'},
+  {icon:'🦘',n:'摸高/蹲姿跳跃（替代跳远）',d:'体态矫正期专用',key:'原地纵跳摸高或蹲姿起跳；落地主动屈膝缓冲；足弓发力蹬地；软垫上练习',avoid:'体态未矫正前做正式立定跳远；连续蛙跳；落地直腿硬撑；水泥地跳'},
+  {icon:'🏃',n:'户外跑',d:'≤800m/次 慢跑',key:'中前足着地，步频快步幅小；穿支撑型跑鞋；草地/塑胶跑道优先；体态矫正期以慢跑短距为主',avoid:'脚跟着地；水泥地长跑；穿软底无支撑鞋；追求速度和距离'},
+  {icon:'⚽',n:'球类',d:'足球/篮球 30-40min',key:'多方向变向锻炼足踝；急停启动强化足弓小肌群；穿包裹性好的运动鞋；矫正期避免高强度对抗',avoid:'穿平底帆布鞋打球；运动超40分钟不休息；受伤后继续打'},
+  {icon:'🏊',n:'综合',d:'游泳/骑车 任选',key:'游泳打腿强化足踝柔韧性；骑车前脚掌踩踏板锻炼足弓肌群；低冲击有氧最适合矫正期',avoid:'骑车用脚跟踩踏板；只做单一运动不轮换'},
+  {icon:'🧗',n:'自由',d:'攀爬/平衡木等',key:'选择需足弓主动发力的项目；平衡木/攀岩训练足踝稳定性；趣味性优先保持兴趣',avoid:'长时间静态站立类项目；穿拖鞋做运动'},
+  {icon:'😴',n:'休息',d:'恢复日',key:'轻柔拉伸放松；足底滚网球按摩；冰敷/热敷交替促进循环',avoid:'完全不动；长时间W坐姿看电视'}
+];
+const RISK_GUIDE = [
+  {t:'周日训练衔接风险',icon:'📅',d:'原安排：周日傍晚休息，仅做晨间SPP足部+髋拉伸。圆肩矫正需要每日持续背肌刺激+胸肌松解，中断一天易前侧胸肌重新紧张、中下斜方肌力量消退。',fix:'周日取消所有弹力带负重训练，保留5分钟简易体态拉伸（猫牛3次+门框胸肌拉伸每侧30s，无弹力带），不用做力量，仅维持软组织张力平衡。'},
+  {t:'弹力带阻力分级',icon:'🪨',d:'手册仅标"轻阻力"，无实操区分标准。阻力过大会让孩子用大腿、髋关节代偿内翻，而非胫后肌发力，训练无效。',fix:'6岁儿童统一用超轻款弹力带（10磅以内）。若做脚内翻时膝盖跟着内扣、小腿整体晃动，立刻降阻力，允许徒手先做无阻力足内翻过渡。'},
+  {t:'缩足/单脚站立进阶梯度',icon:'🪜',d:'SPP短足站立进阶标准：扶墙稳定→单手轻扶→无辅助。平衡差的孩子直接无辅助单脚缩足，会下意识抓脚趾替代足底肌肉，违背激活内在肌目标。',fix:'分3阶：1阶双手扶墙30s → 2阶单手轻扶20s → 3阶无辅助20s。未达标不强行进阶。'},
+  {t:'提踵足中立对齐',icon:'📐',d:'动作要点仅提"脚尖朝前"，未说明负重时力线。孩子踮脚时重心易偏向足内侧，被动加重跟骨外翻。',fix:'做提踵前，先让孩子感受大脚趾球、小脚趾球、足跟三点均匀踩地，再缓慢抬升，全程三点受力不偏移。'}
+];
 const RATING_TEXTS = {1:'敷衍完成',2:'完成50%',3:'完成80%',4:'有变形',5:'动作标准'};
 
 const DIM_LABELS = {foot:'足',leg:'下肢',back:'背肌',posture:'体态'};
@@ -425,7 +445,7 @@ const ASSESS_PHOTO = [
   {k:'photoArch',n:'坐位足弓'}
 ];
 
-const TOTAL_EX = MORNING.length + EVENING.length; // 17
+const TOTAL_EX = MORNING.length + EVENING.length; // 16
 
 // ═══ STATE ═══
 let currentDate = new Date();
@@ -714,6 +734,33 @@ function renderGuide(){
     </div>`;
   });
   document.getElementById('guideEvening').innerHTML=eh;
+
+  let sh='';
+  SPORT_GUIDE.forEach(s=>{
+    sh+=`<div class="guide-card">
+      <div class="gc-head">
+        <div class="gc-num" style="font-size:14px">${s.icon}</div>
+        <span class="gc-name">${s.n}</span>
+        <span class="gc-dose">${s.d}</span>
+      </div>
+      <div class="gc-key">✓ ${s.key}</div>
+      <div class="gc-avoid">✗ 避免：${s.avoid}</div>
+    </div>`;
+  });
+  document.getElementById('guideSport').innerHTML=sh;
+
+  let rh='';
+  RISK_GUIDE.forEach((r,i)=>{
+    rh+=`<div class="guide-card" style="border-color:#FECACA;background:#FEF2F2">
+      <div class="gc-head">
+        <div class="gc-num" style="font-size:14px;background:#EF4444">${r.icon}</div>
+        <span class="gc-name">${r.t}</span>
+      </div>
+      <div class="gc-avoid" style="color:#B91C1C">⚠️ 风险：${r.d}</div>
+      <div class="gc-key" style="color:#15803D">✅ 优化：${r.fix}</div>
+    </div>`;
+  });
+  document.getElementById('guideRisk').innerHTML=rh;
 }
 
 // ═══ TABS ═══
